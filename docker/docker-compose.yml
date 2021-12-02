@@ -8,23 +8,23 @@ services:
     container_name: trib-snapshot-hub
     environment:
       ENV: "local"
+      NETWORK: "harmonytest"
       PORT: 8080
       RELAYER_PK: "0xb80a5165a59af8ce566266fcd0e919e13ed4ecbd57ae952e73ae2cddc08b84c6"
-      ALCHEMY_API_URL: "http://rinkeby.openlaw.io:8545"
       JAWSDB_URL: "postgres://snap:pwd123@trib-snapshot-db:5432/snapshot-db"
       IGNORE_VOTE_END_CONSTRAINT: "true"
-      ALLOWED_DOMAINS: "http://localhost:3000"
+      ALLOWED_DOMAINS: "http://dev1.bitquant.com.hk:3000"
     depends_on:
       - trib-snapshot-db
     ports:
-      - 9090:8080
+      - 9091:8080
 
   # Snapshot Postgres Database to store the Snapshot messages
   trib-snapshot-db:
-    image: postgres:9.6
+    image: postgres:14
     container_name: trib-snapshot-db
-    ports:
-      - "5432:5432"
+    ports:                                                                                                                                              
+      - 5432:5432
     command: ["postgres", "-p 5432"]
     environment:
       POSTGRES_USER: snap
@@ -74,7 +74,7 @@ services:
 
   # The Database to store the subgraph events
   trib-graph-db:
-    image: postgres:9.6
+    image: postgres:14
     container_name: trib-graph-db
     ports:
       - "5433:5433"
@@ -86,7 +86,7 @@ services:
 
   # The Tribute UI React App
   trib-ui:
-    image: openlaw/tribute-ui:main-920ab124
+    image: openlaw/tribute-ui:latest
     container_name: trib-ui
     ports:
       - "3000:3000"
@@ -99,16 +99,16 @@ services:
     environment:
       # Do not change it.
       # The url of the subgraph running locally in a container.
-      REACT_APP_GRAPH_API_URL: "http://localhost:8000/subgraphs/name/openlawteam/tribute"
+      REACT_APP_GRAPH_API_URL: "http://dev1.bitquant.com.hk:8000/subgraphs/name/openlawteam/tribute"
 
       # Do not change it.
       # The url of snaphot-hub running locally in a container.
-      REACT_APP_SNAPSHOT_HUB_API_URL: "http://localhost:9090"
+      REACT_APP_SNAPSHOT_HUB_API_URL: "http://dev1.bitquant.com.hk:9091"
 
       # Do not change it.
       # The environment in which the app is being executed.
-      REACT_APP_ENVIRONMENT: "development"
-
+      # REACT_APP_ENVIRONMENT: "development"
+      REACT_APP_DEFAULT_CHAIN_NAME_LOCAL: "HARMONYTEST"
       # Do not change it.
       # The unique name registered in Snapshot Hub under which proposals, votes, etc. will be stored.
       REACT_APP_SNAPSHOT_SPACE: "tribute"
